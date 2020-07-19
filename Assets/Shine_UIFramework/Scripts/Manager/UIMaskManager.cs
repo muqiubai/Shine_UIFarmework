@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// 遮罩管理
-/// </summary>
-public class UIMaskManager : MonoBehaviour
+namespace Shine.UIFramework
 {
-    // Start is called before the first frame update
-    void Start()
+    /// <summary>
+    /// 遮罩管理
+    /// </summary>
+    public class UIMaskManager : MonoBehaviour
     {
-        
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }
