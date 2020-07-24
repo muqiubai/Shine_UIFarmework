@@ -31,23 +31,26 @@ namespace Shine.Utility
         /// Determine Whether Path Exists
         /// If the file does not exist, create it
         /// </summary>
-        /// <param name="_folderPath"></param>
-        /// <param name="_fileName"></param>
-        public static void DetermineWhetherPathExists(string _folderPath,string _fileName)
+        /// <param name="_path"></param>
+        public static void DeterminePathExists(string _path)
         {
-            if (!Directory.Exists(_folderPath))
+            string folderPath = _path.Substring(0, _path.LastIndexOf('/') + 1);
+
+            Debug.Log(folderPath);
+
+            DirectoryInfo directory = new DirectoryInfo(folderPath);
+
+            if (!directory.Exists)
             {
-                Directory.CreateDirectory(_folderPath);
+                directory.Create();
             }
 
-            string filePath = _folderPath + @"\" + _fileName;
-
-            if (File.Exists(filePath))
+            if (File.Exists(_path))
             {
                 return;
             }
 
-            File.Create(filePath);
+            File.Create(_path);
         }
     }
 }

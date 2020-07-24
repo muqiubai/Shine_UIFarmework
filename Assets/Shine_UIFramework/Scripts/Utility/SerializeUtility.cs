@@ -40,16 +40,13 @@ namespace Shine.Utility
         /// <summary>
         /// Serialize Data
         /// </summary>
-        /// <param name="_folderPath"></param>
-        /// <param name="_fileName"></param>
+        /// <param name="_filePath"></param>
         /// <param name="_obj"></param>
-        public static void SerializeData(string _folderPath,string _fileName,object _obj)
+        public static void SerializeData(string _filePath,object _obj)
         {
-            FileUntility.DetermineWhetherPathExists(_folderPath, _fileName);
-
-            string path = _folderPath + @"\" + _fileName;
+            FileUntility.DeterminePathExists(_filePath);
             
-            using (FileStream stream = new FileStream(path, FileMode.OpenOrCreate,FileAccess.ReadWrite))
+            using (FileStream stream = new FileStream(_filePath, FileMode.OpenOrCreate,FileAccess.ReadWrite))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(stream, _obj);
