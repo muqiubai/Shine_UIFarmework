@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Shine.Utility;
+using System.IO;
+using System.Text;
 
 namespace Shine.Utility
 {
@@ -28,6 +30,11 @@ namespace Shine.Utility
         public static bool EnableSaveFile = false;
 
         /// <summary>
+        /// 输出日志的集合
+        /// </summary>
+        public static List<string> logs = new List<string>();
+
+        /// <summary>
         /// 文件路径
         /// </summary>
         private static string filePath;
@@ -42,10 +49,7 @@ namespace Shine.Utility
         /// </summary>
         private static string fileName = "Log.txt";
 
-        /// <summary>
-        /// 输出日志的集合
-        /// </summary>
-        private static List<string> lines = new List<string>();
+        #region 控制台输出
 
         /// <summary>
         /// Log a message to the Unity Console.
@@ -64,7 +68,7 @@ namespace Shine.Utility
         /// </summary>
         /// <param name="message"></param>
         /// <param name="context"></param>
-        public static void Log(object message,Object context)
+        public static void Log(object message, Object context)
         {
             if (EnableLog)
             {
@@ -77,7 +81,7 @@ namespace Shine.Utility
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        public static void Log(string format,params object[] args)
+        public static void Log(string format, params object[] args)
         {
             if (EnableLog)
             {
@@ -116,7 +120,7 @@ namespace Shine.Utility
         /// </summary>
         /// <param name="message"></param>
         /// <param name="context"></param>
-        public static void LogError(object message,Object context)
+        public static void LogError(object message, Object context)
         {
             if (EnableLog)
             {
@@ -141,13 +145,17 @@ namespace Shine.Utility
         /// </summary>
         /// <param name="message"></param>
         /// <param name="context"></param>
-        public static void LogWarning(object message,Object context)
+        public static void LogWarning(object message, Object context)
         {
             if (EnableLog)
             {
                 Debug.LogWarning(message, context);
             }
         }
+
+        #endregion
+
+        #region 日志本地保存
 
         /// <summary>
         /// 初始化文件路径，便于后续用于保存文件
@@ -172,9 +180,96 @@ namespace Shine.Utility
                 #endif
 
                 FileUntility.DeterminePathExists(filePath);
+
             }
         }
 
+        /// <summary>
+        /// 以集合的形式将日志文件写入到本地
+        /// </summary>
+        /// <param name="saveData"></param>
+        public static void WriteLogToFile(List<string> saveData)
+        {
+            if (EnableSaveFile)
+            {
+                if (saveData.Count <= 0)
+                {
+                    return;
+                }
 
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    return;
+                }
+
+                string[] temp = saveData.ToArray();
+
+                foreach (var item in temp)
+                {
+                    using (StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8))
+                    {
+                        writer.WriteLine(item);
+                    }
+
+                    saveData.Remove(item);
+                }
+
+                temp.Clone();
+
+                System.GC.Collect();
+            }
+        }
+
+        /// <summary>
+        /// 逐条将日志文件写入到本地
+        /// </summary>
+        /// <param name="saveData"></param>
+        public static void WriteLogToFile(string saveData)
+        {
+            if (EnableSaveFile)
+            {
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    return;
+                }
+
+                using (StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8))
+                {
+                    writer.WriteLine(saveData);
+                }
+            }
+        }
+        #endregion
+
+        #region 日志界面打印
+
+        /// <summary>
+        /// 在屏幕是显示日志
+        /// 在OnGUI中进行调用
+        /// </summary>
+        public static void DisplayOnScreen()
+        {
+            if (EnableOutput)
+            {
+                if (logs.Count <= 0)
+                {
+                    return;
+                }
+
+                string[] temp = logs.ToArray();
+
+                foreach (var item in temp)
+                {
+                    GUIStyle fontStyle = new GUIStyle();
+                    fontStyle.normal.background = null;    
+                    fontStyle.normal.textColor = new Color(1, 0, 0);
+                    fontStyle.fontSize = 20;
+                    fontStyle.alignment = TextAnchor.UpperLeft;
+                    GUILayout.Label(item, fontStyle);
+                }
+            }
+        }
+
+        #endregion
     }
 }

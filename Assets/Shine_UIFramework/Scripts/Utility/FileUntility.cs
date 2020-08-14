@@ -36,8 +36,6 @@ namespace Shine.Utility
         {
             string folderPath = _path.Substring(0, _path.LastIndexOf('/') + 1);
 
-            Debug.Log(folderPath);
-
             DirectoryInfo directory = new DirectoryInfo(folderPath);
 
             if (!directory.Exists)
@@ -47,10 +45,10 @@ namespace Shine.Utility
 
             if (File.Exists(_path))
             {
-                return;
+                File.Delete(_path);
             }
 
-            File.Create(_path);
+            File.Create(_path).Dispose();
         }
     }
 }
